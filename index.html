@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão de Usuários</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="container">
+        <section id="modulo-cadastro" class="card">
+            <h2>Cadastro de Usuários</h2>
+            <form id="userForm">
+                <div class="input-group">
+                    <input type="text" id="nome" placeholder="Nome Completo" required>
+                    <input type="email" id="email" placeholder="E-mail" required>
+                </div>
+                <button type="submit" class="btn-save">Cadastrar Usuário</button>
+            </form>
+
+            <div class="table-container">
+                <table id="userTable">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="modulo-vendas" class="card">
+            <h2>Módulo de Vendas</h2>
+            <div class="vendas-controls">
+                <label for="selectUsuarios">Cliente:</label>
+                <select id="selectUsuarios">
+                    <option value="">Selecione um usuário...</option>
+                </select>
+                <button onclick="iniciarVenda()" class="btn-action">Iniciar Venda</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

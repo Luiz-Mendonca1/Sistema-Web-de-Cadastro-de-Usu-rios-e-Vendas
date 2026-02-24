@@ -1,0 +1,88 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e9ecef;
+    padding: 40px 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+input, select {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #80bdff;
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-save {
+    background-color: #007bff;
+    color: white;
+    width: 100%;
+}
+
+.btn-save:hover { background-color: #0056b3; }
+
+.btn-action { background-color: #28a745; color: white; }
+
+.btn-delete {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+th { background-color: #f8f9fa; color: #495057; }
