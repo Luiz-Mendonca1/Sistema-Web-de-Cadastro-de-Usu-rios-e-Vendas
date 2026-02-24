@@ -81,3 +81,115 @@ function iniciarVenda() {
     }
     alert(`Processando venda para: ${usuarioSelecionado}`);
 }
+
+/////////////////////// REGISTRO DE VENDAS ///////////////////////
+
+// Array de vendas
+let vendas = [];
+
+// Elementos
+const formVenda = document.getElementById("formVenda");
+const selectUsuario = document.getElementById("selectUsuario");
+const selectProduto = document.getElementById("selectProduto");
+const quantidadeVenda = document.getElementById("quantidadeVenda");
+const totalVendaSpan = document.getElementById("totalVenda");
+const tabelaVendas = document.getElementById("tabelaVendas");
+
+// Atualizar selects (chamar sempre que cadastrar/excluir usuário ou produto)
+function atualizarSelects() {
+    // Usuários
+    selectUsuario.innerHTML = "";
+    usuarios.forEach((usuario, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = usuario.nome;
+        selectUsuario.appendChild(option);
+    });
+
+    // Produtos
+    selectProduto.innerHTML = "";
+    produtos.forEach((produto, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = `${produto.nome} (Estoque: ${produto.estoque})`;
+        selectProduto.appendChild(option);
+    });
+}
+
+// Calcular total automaticamente ao mudar quantidade ou produto
+function calcularTotal() {
+    const produtoIndex = selectProduto.value;
+    const quantidade = Number(quantidadeVenda.value);
+
+    if (produtoIndex === "" || quantidade <= 0) {
+        totalVendaSpan.textContent = "0.00";
+        return;
+    }
+
+    const produto = produtos[produtoIndex];
+    const total = produto.preco * quantidade;
+
+    totalVendaSpan.textContent = total.toFixed(2);
+}
+
+selectProduto.addEventListener("change", calcularTotal);
+quantidadeVenda.addEventListener("input", calcularTotal);
+
+// Registrar venda
+formVenda.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const usuarioIndex = selectUsuario.value;
+    const produtoIndex = selectProduto.value;
+    const quantidade = Number(quantidadeVenda.value);
+
+    if (usuarioIndex === "" || produtoIndex === "" || quantidade <= 0) {
+        alert("Preencha todos os campos corretamente!");
+        return;
+    }
+
+    const usuario = usuarios[usuarioIndex];
+    const produto = produtos[produtoIndex];
+
+    // Verificar estoque
+    if (quantidade > produto.estoque) {
+        alert("Estoque insuficiente!");
+        return;
+    }
+
+    const total = produto.preco * quantidade;
+
+    // Atualizar estoque
+    produto.estoque -= quantidade;
+
+    // Registrar venda
+    vendas.push({
+        usuario: usuario.nome,
+        produto: produto.nome,
+        quantidade: quantidade,
+        total: total
+    });
+
+    atualizarTabelaVendas();
+    atualizarSelects();
+    formVenda.reset();
+    totalVendaSpan.textContent = "0.00";
+});
+
+// Atualizar tabela de vendas
+function atualizarTabelaVendas() {
+    tabelaVendas.innerHTML = "";
+
+    vendas.forEach(venda => {
+        const linha = document.createElement("tr");
+
+        linha.innerHTML = `
+            <td>${venda.usuario}</td>
+            <td>${venda.produto}</td>
+            <td>${venda.quantidade}</td>
+            <td>R$ ${venda.total.toFixed(2)}</td>
+        `;
+
+        tabelaVendas.appendChild(linha);
+    });
+}

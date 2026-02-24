@@ -86,3 +86,23 @@ th, td {
 }
 
 th { background-color: #f8f9fa; color: #495057; }
+
+.venda{
+    padding: 8px;
+}
+
+.registro{
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.historico{
+    padding: 20px;
+}
+
+h3{
+    margin-top: 10px;
+    color: #2c3e50;
+}
