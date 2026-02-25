@@ -1,1 +1,2 @@
-# Sistema-Web-de-Cadastro-de-Usu-rios-e-Vendas
+# Sistema de Cadastro para Usuarios e Vendas
+atividade em grupo produzida no Senai

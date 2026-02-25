@@ -1,195 +1,172 @@
-// Seletores de elementos
-const userForm = document.getElementById('userForm');
-const userTableBody = document.querySelector('#userTable tbody');
-const selectUsuarios = document.getElementById('selectUsuarios');
-
-// Inicialização: carrega os dados do localStorage ao abrir a página
-document.addEventListener('DOMContentLoaded', atualizarInterface);
-
-// Evento de submissão do formulário
-userForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const nome = document.getElementById('nome').value;
-    const email = document.getElementById('email').value;
-
-    const novoUsuario = {
-        id: Date.now(), // ID único baseado no timestamp
-        nome: nome,
-        email: email
-    };
-
-    salvarUsuario(novoUsuario);
-    userForm.reset();
-});
-
-// Salva no LocalStorage
-function salvarUsuario(usuario) {
-    const usuarios = obterUsuarios();
-    usuarios.push(usuario);
-    localStorage.setItem('meus_usuarios', JSON.stringify(usuarios));
-    atualizarInterface();
-}
-
-// Remove do LocalStorage
-function deletarUsuario(id) {
-    let usuarios = obterUsuarios();
-    usuarios = usuarios.filter(u => u.id !== id);
-    localStorage.setItem('meus_usuarios', JSON.stringify(usuarios));
-    atualizarInterface();
-}
-
-// Busca a lista atualizada
-function obterUsuarios() {
-    return JSON.parse(localStorage.getItem('meus_usuarios') || '[]');
-}
-
-// Atualiza a tabela e o select de vendas simultaneamente
-function atualizarInterface() {
-    const usuarios = obterUsuarios();
-
-    // 1. Limpa e reconstrói a Tabela
-    userTableBody.innerHTML = '';
-    usuarios.forEach(user => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${user.nome}</td>
-            <td>${user.email}</td>
-            <td>
-                <button class="btn-delete" onclick="deletarUsuario(${user.id})">Excluir</button>
-            </td>
-        `;
-        userTableBody.appendChild(tr);
-    });
-
-    // 2. Limpa e reconstrói o Select de Vendas
-    selectUsuarios.innerHTML = '<option value="">Selecione um usuário...</option>';
-    usuarios.forEach(user => {
-        const option = document.createElement('option');
-        option.value = user.nome;
-        option.textContent = user.nome;
-        selectUsuarios.appendChild(option);
-    });
-}
-
-// Função auxiliar para o módulo de vendas
-function iniciarVenda() {
-    const usuarioSelecionado = selectUsuarios.value;
-    if (!usuarioSelecionado) {
-        alert("Por favor, selecione um cliente primeiro!");
-        return;
-    }
-    alert(`Processando venda para: ${usuarioSelecionado}`);
-}
-
-/////////////////////// REGISTRO DE VENDAS ///////////////////////
-
-// Array de vendas
+// array para cada elemento
+let usuarios = [];
+let produtos = [];
 let vendas = [];
 
-// Elementos
-const formVenda = document.getElementById("formVenda");
-const selectUsuario = document.getElementById("selectUsuario");
-const selectProduto = document.getElementById("selectProduto");
-const quantidadeVenda = document.getElementById("quantidadeVenda");
-const totalVendaSpan = document.getElementById("totalVenda");
-const tabelaVendas = document.getElementById("tabelaVendas");
+// Usuários
+const formUsuario = document.getElementById('formUsuario');
+const tableUserBody = document.querySelector('#tableUsuarios tbody');
+const selUserVenda = document.getElementById('selUserVenda');
 
-// Atualizar selects (chamar sempre que cadastrar/excluir usuário ou produto)
-function atualizarSelects() {
-    // Usuários
-    selectUsuario.innerHTML = "";
-    usuarios.forEach((usuario, index) => {
-        const option = document.createElement("option");
-        option.value = index;
-        option.textContent = usuario.nome;
-        selectUsuario.appendChild(option);
-    });
+// Produtos
+const formProduto = document.getElementById('formProduto');
+const tableProdBody = document.querySelector('#tableProdutos tbody');
+const selProdVenda = document.getElementById('selProdVenda');
 
-    // Produtos
-    selectProduto.innerHTML = "";
-    produtos.forEach((produto, index) => {
-        const option = document.createElement("option");
-        option.value = index;
-        option.textContent = `${produto.nome} (Estoque: ${produto.estoque})`;
-        selectProduto.appendChild(option);
-    });
-}
+// Vendas
+const formVenda = document.getElementById('formVenda');
+const vendaQtd = document.getElementById('vendaQtd');
+const totalDisplay = document.getElementById('totalDisplay');
+const tableVendasBody = document.querySelector('#tableVendas tbody');
 
-// Calcular total automaticamente ao mudar quantidade ou produto
-function calcularTotal() {
-    const produtoIndex = selectProduto.value;
-    const quantidade = Number(quantidadeVenda.value);
-
-    if (produtoIndex === "" || quantidade <= 0) {
-        totalVendaSpan.textContent = "0.00";
-        return;
-    }
-
-    const produto = produtos[produtoIndex];
-    const total = produto.preco * quantidade;
-
-    totalVendaSpan.textContent = total.toFixed(2);
-}
-
-selectProduto.addEventListener("change", calcularTotal);
-quantidadeVenda.addEventListener("input", calcularTotal);
-
-// Registrar venda
-formVenda.addEventListener("submit", function (e) {
+// --- FUNÇÕES DE USUÁRIO ---
+formUsuario.addEventListener('submit', (e) => {
     e.preventDefault();
+    const nome = document.getElementById('userName').value;
+    const email = document.getElementById('userEmail').value;
 
-    const usuarioIndex = selectUsuario.value;
-    const produtoIndex = selectProduto.value;
-    const quantidade = Number(quantidadeVenda.value);
-
-    if (usuarioIndex === "" || produtoIndex === "" || quantidade <= 0) {
-        alert("Preencha todos os campos corretamente!");
-        return;
-    }
-
-    const usuario = usuarios[usuarioIndex];
-    const produto = produtos[produtoIndex];
-
-    // Verificar estoque
-    if (quantidade > produto.estoque) {
-        alert("Estoque insuficiente!");
-        return;
-    }
-
-    const total = produto.preco * quantidade;
-
-    // Atualizar estoque
-    produto.estoque -= quantidade;
-
-    // Registrar venda
-    vendas.push({
-        usuario: usuario.nome,
-        produto: produto.nome,
-        quantidade: quantidade,
-        total: total
-    });
-
-    atualizarTabelaVendas();
-    atualizarSelects();
-    formVenda.reset();
-    totalVendaSpan.textContent = "0.00";
+    //envia infos pra lista de usuarios
+    usuarios.push({ id: Date.now(), nome, email });
+    formUsuario.reset();
+    renderUsuarios();
 });
 
-// Atualizar tabela de vendas
-function atualizarTabelaVendas() {
-    tabelaVendas.innerHTML = "";
+function deletarUsuario(id) {
+    usuarios = usuarios.filter(u => u.id !== id);
+    renderUsuarios();
+}
 
-    vendas.forEach(venda => {
-        const linha = document.createElement("tr");
+function renderUsuarios() {
+    tableUserBody.innerHTML = '';
+    usuarios.forEach(u => {
+        tableUserBody.innerHTML += `
+            <tr>
+                <td>${u.nome}</td>
+                <td>${u.email}</td>
+                <td><button class="btn-delete" onclick="deletarUsuario(${u.id})">Excluir</button></td>
+            </tr>`;
+    });
 
-        linha.innerHTML = `
-            <td>${venda.usuario}</td>
-            <td>${venda.produto}</td>
-            <td>${venda.quantidade}</td>
-            <td>R$ ${venda.total.toFixed(2)}</td>
-        `;
+    // Envia os usuários para o Registro de Vendas
+    selUserVenda.innerHTML = '<option value="">Selecione o Cliente</option>';
+    usuarios.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        opt.textContent = u.nome;
+        selUserVenda.appendChild(opt);
+    });
+}
 
-        tabelaVendas.appendChild(linha);
+// --- FUNÇÕES DE PRODUTO ---
+formProduto.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('prodName').value;
+    const preco = parseFloat(document.getElementById('prodPreco').value);
+    const estoque = parseInt(document.getElementById('prodEstoque').value);
+
+    // Validação de números para ser correspodnente ao estoque e preço
+    if (isNaN(preco) || isNaN(estoque)) {
+        alert("Preço e Estoque devem ser valores numéricos válidos.");
+        return;
+    }
+
+    produtos.push({ id: Date.now(), nome, preco, estoque });
+    formProduto.reset();
+    renderProdutos();
+});
+
+function deletarProduto(id) {
+    produtos = produtos.filter(p => p.id !== id);
+    renderProdutos();
+}
+
+function renderProdutos() {
+    tableProdBody.innerHTML = '';
+    produtos.forEach(p => {
+        tableProdBody.innerHTML += `
+            <tr>
+                <td>${p.nome}</td>
+                <td>R$ ${p.preco.toFixed(2)}</td>
+                <td>${p.estoque}</td>
+                <td><button class="btn-delete" onclick="deletarProduto(${p.id})">Excluir</button></td>
+            </tr>`;
+    });
+
+    // Envia os produtos para o Registro de Vendas
+    selProdVenda.innerHTML = '<option value="">Selecione o Produto</option>';
+    produtos.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = `${p.nome} (Estoque: ${p.estoque})`;
+        selProdVenda.appendChild(opt);
+    });
+}
+
+// --- FUNÇÕES DE VENDA ---
+
+// Cálculo do total na tela baseado na quantidade e valor
+function atualizarPrecoTotal() {
+    const prodId = selProdVenda.value;
+    const qtd = parseInt(vendaQtd.value);
+    const produto = produtos.find(p => p.id == prodId);
+
+    if (produto && qtd > 0) {
+        const total = produto.preco * qtd;
+        totalDisplay.textContent = `R$ ${total.toFixed(2)}`;
+    } else {
+        totalDisplay.textContent = `R$ 0,00`;
+    }
+}
+
+selProdVenda.addEventListener('change', atualizarPrecoTotal);
+vendaQtd.addEventListener('input', atualizarPrecoTotal);
+
+formVenda.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const userId = selUserVenda.value;
+    const prodId = selProdVenda.value;
+    const qtd = parseInt(vendaQtd.value);
+
+    const usuario = usuarios.find(u => u.id == userId);
+    const produto = produtos.find(p => p.id == prodId);
+
+    // Lógica de verificação do estoque
+    if (qtd > produto.estoque) {
+        alert("Erro: Estoque insuficiente!");
+        return;
+    }
+
+    // Processar Venda
+    const valorTotal = produto.preco * qtd;
+    produto.estoque -= qtd; // Atualiza estoque
+
+    //historico de vendas
+    vendas.push({
+        cliente: usuario.nome,
+        produto: produto.nome,
+        qtd: qtd,
+        total: valorTotal
+    });
+
+    // Resetar interface de vendas
+    formVenda.reset();
+    totalDisplay.textContent = `R$ 0,00`;
+    
+    // Atualizar tudo para refletir as mudanças de estoque e vendas
+    renderProdutos();
+    renderVendas();
+});
+
+function renderVendas() {
+    tableVendasBody.innerHTML = '';
+    vendas.forEach(v => {
+        tableVendasBody.innerHTML += `
+            <tr>
+                <td>${v.cliente}</td>
+                <td>${v.produto}</td>
+                <td>${v.qtd}</td>
+                <td>R$ ${v.total.toFixed(2)}</td>
+            </tr>`;
     });
 }

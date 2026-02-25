@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestão de Usuários</title>
+    <title>Sistema de Gestão</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <main class="container">
-        <section id="modulo-cadastro" class="card">
-            <h2>Cadastro de Usuários</h2>
-            <form id="userForm">
-                <div class="input-group">
-                    <input type="text" id="nome" placeholder="Nome Completo" required>
-                    <input type="email" id="email" placeholder="E-mail" required>
-                </div>
-                <button type="submit" class="btn-save">Cadastrar Usuário</button>
-            </form>
+    <header class="main-header">
+        <h1>Gerenciador de Vendas</h1>
+    </header>
 
-            <div class="table-container">
-                <table id="userTable">
+    <main class="container">
+        <section class="card">
+            <h2>Cadastro de Usuários</h2>
+            <form id="formUsuario" class="form-grid">
+                <input type="text" id="userName" placeholder="Nome Completo" required>
+                <input type="email" id="userEmail" placeholder="E-mail" required>
+                <button type="submit" class="btn-primary">Cadastrar</button>
+            </form>
+            <div class="table-wrapper">
+                <table id="tableUsuarios">
                     <thead>
                         <tr>
                             <th>Nome</th>
@@ -28,23 +29,72 @@
                             <th>Ações</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </section>
 
-        <section id="modulo-vendas" class="card">
-            <h2>Módulo de Vendas</h2>
-            <div class="vendas-controls">
-                <label for="selectUsuarios">Cliente:</label>
-                <select id="selectUsuarios">
-                    <option value="">Selecione um usuário...</option>
+        <section class="card">
+            <h2>Cadastro de Produtos</h2>
+            <form id="formProduto" class="form-grid">
+                <input type="text" id="prodName" placeholder="Nome do Produto" required>
+                <input type="number" id="prodPreco" placeholder="Preço (R$)" step="0.01" min="0.01" required>
+                <input type="number" id="prodEstoque" placeholder="Qtd em Estoque" min="0" required>
+                <button type="submit" class="btn-primary">Cadastrar</button>
+            </form>
+            <div class="table-wrapper">
+                <table id="tableProdutos">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Preço</th>
+                            <th>Estoque</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card highlight">
+            <h2>Registro de Vendas</h2>
+            <form id="formVenda" class="form-grid">
+                <select id="selUserVenda" required>
+                    <option value="">Selecione o Cliente</option>
                 </select>
-                <button onclick="iniciarVenda()" class="btn-action">Iniciar Venda</button>
+                <select id="selProdVenda" required>
+                    <option value="">Selecione o Produto</option>
+                </select>
+                <input type="number" id="vendaQtd" placeholder="Qtd" min="1" required>
+                <button type="submit" class="btn-success">Finalizar Venda</button>
+            </form>
+            
+            <div class="total-container">
+                <h3>Total da Venda: <span id="totalDisplay">R$ 0,00</span></h3>
+            </div>
+
+            <h3>Histórico de Vendas</h3>
+            <div class="table-wrapper">
+                <table id="tableVendas">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Produto</th>
+                            <th>Qtd</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </section>
     </main>
+
+    <footer>
+        <h3>Sistema de Gestão de Vendas - SENAI</h3>
+        João Lucas, Luiz Eduardo, Cassio Mendonça, Samuel Carvalho
+    </footer>
 
     <script src="script.js"></script>
 </body>
